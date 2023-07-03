@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Moisture Sensor</title>
+    <style>
+        .grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+        .cell {
+            flex: 0 0 30%;
+            height: 320px;
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+        }
+        .gauge {
+            width: 100%;
+            height: 90%;
+            display: block;
+            margin: 0 auto;
+        }
+        .title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+            font-family: "Lucida Console", "Courier New", monospace;
+            font-size: 18px;
+        }
+
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.3.0/raphael.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/toorshia/justgage@1.3.1/dist/justgage.min.js"></script>
+</head>
+<body>
+    <div class="grid">
+        <div class="cell"><div class="title">Gauge 1</div><div class="gauge" id="gauge1"></div></div>
+        <div class="cell"><div class="title">Gauge 2</div><div class="gauge" id="gauge2"></div></div>
+        <div class="cell"><div class="title">Gauge 3</div><div class="gauge" id="gauge3"></div></div>
+        <div class="cell"><div class="title">Gauge 4</div><div class="gauge" id="gauge4"></div></div>
+        <div class="cell"><div class="title">Gauge 5</div><div class="gauge" id="gauge5"></div></div>
+        <div class="cell"><div class="title">Gauge 6</div><div class="gauge" id="gauge6"></div></div>
+    </div>
+    <script>
+        $(document).ready(function() {
+            var gauges = Array(6).fill(null);
+
+            function updateSensorValue() {
+                $.get('/api/sensor', function(data) {
+                    gauges = gauges.map((gauge, index) => {
+                        if (gauge) {
+                            gauge.refresh(data.value);
+                            return gauge;
+                        } else {
+                            return new JustGage({
+                                id: "gauge" + (index + 1),
+                                value: data.value,
+                                min: 0,
+                                max: 100,
+                                title: "Moisture Level",
+                                label: "%",
+                                levelColors: ['#ff0000', '#0000ff'],
+                                gaugeWidthScale: 0.6,
+                                shadowOpacity: 0.8,
+                                shadowSize: 9,
+                                showInnerShadow: true,
+                                donut: true,
+                                startAnimationType: "bounce",
+                                refreshAnimationType: "bounce"
+                            });
+                        }
+                    });
+                });
+            }
+
+            // Refresh the sensor value every 2 seconds
+            setInterval(updateSensorValue, 2000);
+        });
+    </script>
+</body>
+</html>
