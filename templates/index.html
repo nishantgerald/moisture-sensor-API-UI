@@ -48,7 +48,7 @@
             var gauges = Array(6).fill(null);
 
             function updateSensorValue() {
-                $.get('/api/sensor', function(data) {
+                $.get('/api/v1/sensor', function(data) {
                     gauges = gauges.map((gauge, index) => {
                         if (gauge) {
                             gauge.refresh(data.value);

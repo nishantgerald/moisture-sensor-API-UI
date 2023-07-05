@@ -8,13 +8,13 @@ sensor_value = 0
 def index():
     return render_template('index.html', sensor_value=sensor_value)
 
-@app.route('/api/sensor', methods=['POST', 'PUT'])
+@app.route('/api/v1/sensor', methods=['POST', 'PUT'])
 def update_sensor():
     global sensor_value
     sensor_value = request.get_json().get('value')
     return '', 204
 
-@app.route('/api/sensor', methods=['GET'])
+@app.route('/api/v1/sensor', methods=['GET'])
 def get_sensor():
     global sensor_value
     # Return the sensor value as a JSON response
